@@ -55,6 +55,8 @@ RUN mkdir -p /app/node_modules && chown -R pptruser:pptruser /app
 # Volver al usuario no root
 USER pptruser
 
+RUN ls -l /usr/bin/google-chrome-stable
+
 # Configurar el directorio de trabajo
 WORKDIR /app
 

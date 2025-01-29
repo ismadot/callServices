@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
   res.send("Puppeteer API is running...");
+  console.log(`Puppeteer API is running...`);
 });
 
 // Verifica qué navegador está disponible
@@ -30,7 +31,16 @@ app.get("/scrape", async (req, res) => {
     console.log("Launching Puppeteer...");
     const browser = await puppeteer.launch({
       executablePath: getExecutablePath(),
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--no-first-run",
+        "--no-zygote",
+        "--single-process", // Especialmente útil en entornos limitados
+      ],
     });
 
     const page = await browser.newPage();
@@ -42,8 +52,12 @@ app.get("/scrape", async (req, res) => {
     );
 
     console.log("Extracting page content...", document.body);
-    const bodyContent = await page.evaluate(() => document.body.textContent);
 
+    // Extraer contenido dentro del contexto del navegador
+    const bodyContent = await page.evaluate(() => {
+      console.log("Inside browser context:", document.body.textContent);
+      return document.body.textContent;
+    });
     await browser.close();
 
     try {
