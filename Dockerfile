@@ -49,9 +49,6 @@ RUN apt-get update && apt-get install -y \
     chromium \
     && rm -rf /var/lib/apt/lists/*
 
-# Volver al usuario no root
-USER pptruser
-
 # Configurar el directorio de trabajo
 WORKDIR /app
 
