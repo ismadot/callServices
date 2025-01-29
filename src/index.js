@@ -12,6 +12,7 @@ app.get("/", (req, res) => {
 // Verifica qué navegador está disponible
 const EXECUTABLE_PATHS = [
   process.env.PUPPETEER_EXECUTABLE_PATH,
+  "/opt/google/chrome/google-chrome", // Ruta real del binario
   "/usr/bin/google-chrome-stable",
   "/usr/bin/chromium",
 ];
@@ -69,7 +70,7 @@ app.get("/scrape", async (req, res) => {
       throw new Error("Failed to parse scraped data as JSON.");
     }
   } catch (error) {
-    console.error("Error while scraping:", error.message);
+    console.error("Error while scraping:", error.message, error);
     res.status(500).json({
       message: "Error while scraping the page.",
       error: error.message,
