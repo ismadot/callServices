@@ -41,7 +41,7 @@ app.get("/scrape", async (req, res) => {
       }
     );
 
-    console.log("Extracting page content...");
+    console.log("Extracting page content...", document.body);
     const bodyContent = await page.evaluate(() => document.body.textContent);
 
     await browser.close();

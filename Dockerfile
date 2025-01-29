@@ -49,6 +49,12 @@ RUN apt-get update && apt-get install -y \
     chromium \
     && rm -rf /var/lib/apt/lists/*
 
+    # Dar permisos a pptruser
+RUN mkdir -p /app/node_modules && chown -R pptruser:pptruser /app
+
+# Volver al usuario no root
+USER pptruser
+
 # Configurar el directorio de trabajo
 WORKDIR /app
 
