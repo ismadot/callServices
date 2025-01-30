@@ -2,26 +2,29 @@ const express = require("express");
 const puppeteer = require("puppeteer-core");
 const puppeteerBase = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const os = require("os");
 
+// Detectar sistema operativo
+const platform = os.platform(); // 'darwin' (Mac), 'win32' (Windows), 'linux' (Linux)
+console.log(`[INFO] Running on platform: ${platform}`);
+
+const EXECUTABLE_PATHS = {
+  darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", // Mac
+  win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", // Windows
+  linux: "/usr/bin/google-chrome-stable", // Linux (Cloud Run, Docker, etc.)
+};
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Verifica qué navegador está disponible
-const EXECUTABLE_PATHS = [
-  process.env.PUPPETEER_EXECUTABLE_PATH,
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-  "/usr/bin/google-chrome-stable",
-  "/usr/bin/chromium",
-];
 
 const getExecutablePath = () => {
-  for (const path of EXECUTABLE_PATHS) {
-    if (path) {
-      console.log(`[INFO] Trying Puppeteer with: ${path}`);
-      return path;
-    }
+  const path =
+    process.env.PUPPETEER_EXECUTABLE_PATH || EXECUTABLE_PATHS[platform];
+  if (!path) {
+    throw new Error("[ERROR] No suitable Chrome executable found!");
   }
-  throw new Error("[ERROR] No suitable browser found!");
+  console.log(`[INFO] Using Chrome path: ${path}`);
+  return path;
 };
 
 app.get("/", (req, res) => {
