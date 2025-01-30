@@ -6,13 +6,12 @@ const PORT = process.env.PORT || 8080;
 
 app.get("/", (req, res) => {
   res.send("Puppeteer API is running...");
-  console.log(`Puppeteer API is running...`);
 });
 
 // Verifica qué navegador está disponible
 const EXECUTABLE_PATHS = [
   process.env.PUPPETEER_EXECUTABLE_PATH,
-  "/opt/google/chrome/google-chrome", // Ruta real del binario
+  // "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "/usr/bin/google-chrome-stable",
   "/usr/bin/chromium",
 ];
@@ -32,16 +31,7 @@ app.get("/scrape", async (req, res) => {
     console.log("Launching Puppeteer...");
     const browser = await puppeteer.launch({
       executablePath: getExecutablePath(),
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--no-first-run",
-        "--no-zygote",
-        "--single-process", // Especialmente útil en entornos limitados
-      ],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
@@ -52,13 +42,9 @@ app.get("/scrape", async (req, res) => {
       }
     );
 
-    console.log("Extracting page content...", document.body);
+    console.log("Extracting page content...");
+    const bodyContent = await page.evaluate(() => document.body.textContent);
 
-    // Extraer contenido dentro del contexto del navegador
-    const bodyContent = await page.evaluate(() => {
-      console.log("Inside browser context:", document.body.textContent);
-      return document.body.textContent;
-    });
     await browser.close();
 
     try {
@@ -70,7 +56,7 @@ app.get("/scrape", async (req, res) => {
       throw new Error("Failed to parse scraped data as JSON.");
     }
   } catch (error) {
-    console.error("Error while scraping:", error.message, error);
+    console.error("Error while scraping:", error.message);
     res.status(500).json({
       message: "Error while scraping the page.",
       error: error.message,
