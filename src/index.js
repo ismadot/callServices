@@ -49,7 +49,6 @@ app.get("/scrape", async (req, res) => {
       executablePath: getExecutablePath(),
       headless: true,
       args: [
-        `--proxy-server=${PROXY}`,
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
@@ -238,6 +237,7 @@ app.get("/scrape-proxy", async (req, res) => {
         "--disable-renderer-backgrounding",
         "--disable-sync",
         "--disable-extensions",
+        "--ignore-certificate-errors", // 🔥 FIX: Ignora errores de SSL
       ],
     });
 
@@ -299,12 +299,10 @@ app.get("/scrape-proxy", async (req, res) => {
     }
   } catch (error) {
     console.error("[ERROR] Error while scraping:", error);
-    res
-      .status(500)
-      .json({
-        message: "Error while scraping the page.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Error while scraping the page.",
+      error: error.message,
+    });
   }
 });
 
