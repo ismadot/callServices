@@ -18,10 +18,11 @@ const PORT = process.env.PORT || 8080;
 const BRIGHT_DATA_API_KEY =
   "b24e3693a9fba991f8835c053e5ed43cf2d1c7409d7fd6a61ef8ccbab0757f44";
 const PROXY =
-  "http://brd-customer-hl_cffe296f-zone-web_unlocker_test_scp:kbe3npqq990h@brd.superproxy.io:33335";
+  "http://brd-customer-hl_cffe296f-zone-web_unlocker_test_scp-country-cl:kbe3npqq990h@brd.superproxy.io:33335";
 
 // 🟢 **Configuración del Proxy BrightData**
-const PROXY_USERNAME = "brd-customer-hl_cffe296f-zone-web_unlocker_test_scp";
+const PROXY_USERNAME =
+  "brd-customer-hl_cffe296f-zone-web_unlocker_test_scp-country-cl";
 const PROXY_PASSWORD = "kbe3npqq990h";
 const PROXY_HOST = "brd.superproxy.io";
 const PROXY_PORT = "33335";
@@ -154,7 +155,7 @@ app.get("/test-scrape", async (req, res) => {
 
     console.log("[INFO] Opening page...");
     await page.goto(
-      "http://midas.minsal.cl/farmacia_v2/WS/getLocalesTurnos.php",
+      "https://midas.minsal.cl/farmacia_v2/WS/getLocalesTurnos.php",
       {
         waitUntil: "networkidle2", // Asegura que la página está completamente cargada
         timeout: 30000, // Espera hasta 30 segundos
